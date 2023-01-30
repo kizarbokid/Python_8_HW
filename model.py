@@ -1,5 +1,4 @@
 import csv
-
 import controller
 
 
@@ -72,3 +71,29 @@ def write_to_file(database: list,filename='Успеваемость.csv'):
         writer.writeheader()
         # запись нескольких строк
         writer.writerows(progress_list_new)
+
+# сортировка и фильтрация списка студентов определенного класса
+def filter_list_of_students(students_list: list, input_class: str):
+    sorted_students_list = list()
+    for elem in students_list:
+        if elem['КЛАСС'] == input_class:
+            sorted_students_list.append(elem['ФИО'])
+    # сортировка списка учеников
+    sorted_students_list = sorted(sorted_students_list)
+    return sorted_students_list
+
+# Добавить оценку ученику
+def write_mark(database: list, input_class: str, student_name: str, discipline: str, mark: int):
+    trigger = True
+    for i in range(len(database)):
+        if database[i]['ФИО'] == student_name and discipline in database[i]:
+            temp_list = list()
+            trigger = False
+            temp_list = database[i][discipline]
+            temp_list.append(mark)
+    # Если в базе у данного ученика нет оценок по конкретному предмету, то добавтьь новую запись в БД
+    if trigger:
+        marks = list()
+        marks.append(mark)
+        database.append(
+            {'КЛАСС': input_class, 'ФИО': student_name, discipline: marks})
